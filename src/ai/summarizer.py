@@ -68,6 +68,20 @@ LABELS = {
             "3. Checking if the AI model is working correctly\n"
         ),
     },
+    "pt": {
+        "header": "Radar TDAH na Prática",
+        "source": "Fonte",
+        "background": "Contexto",
+        "discussion": "Conversa",
+        "references": "Referências",
+        "tags": "Temas",
+        "selected_items": "De {total} conteúdos lidos hoje, {selected} foram escolhidos para você.",
+        "empty_analyzed": "Lemos {total} conteúdos hoje, mas nenhum foi importante o bastante para entrar no radar.",
+        "empty_body": (
+            "Hoje não teve novidade relevante sobre TDAH nas fontes acompanhadas.\n\n"
+            "Amanhã tem mais.\n"
+        ),
+    },
     "zh": {
         "header": "Horizon 每日速递",
         "source": "来源",
@@ -232,8 +246,11 @@ class DailySummarizer:
         if not items:
             return self._generate_empty_summary(date, total_fetched, labels)
 
+        shown_date = date
+        if language == "pt" and len(date) == 10:
+            shown_date = f"{date[8:10]}/{date[5:7]}/{date[0:4]}"
         header = (
-            f"# {labels['header']} - {date}\n\n"
+            f"# {labels['header']} - {shown_date}\n\n"
             f"> {labels['selected_items'].format(total=total_fetched, selected=len(items))}\n\n"
             "---\n\n"
         )
@@ -405,6 +422,11 @@ class DailySummarizer:
                     f"{item.published_at.month}月{item.published_at.day}日 "
                     f"{item.published_at:%H:%M}"
                 )
+            elif language == "pt":
+                from zoneinfo import ZoneInfo
+
+                local_time = item.published_at.astimezone(ZoneInfo("America/Sao_Paulo"))
+                source_parts.append(local_time.strftime("%d/%m, %H:%M"))
             else:
                 day = item.published_at.strftime("%d").lstrip("0")
                 source_parts.append(item.published_at.strftime(f"%b {day}, %H:%M"))
@@ -437,7 +459,10 @@ class DailySummarizer:
                 if language == "zh":
                     block_title = _pangu(block_title)
                     block_content = _pangu(block_content)
-                lines.extend(["", f"**「{block_title}」** {block_content}"])
+                if language == "pt":
+                    lines.extend(["", f"**{block_title}:** {block_content}"])
+                else:
+                    lines.extend(["", f"**「{block_title}」** {block_content}"])
 
         sources = artifact.sources if artifact else []
         if sources:
