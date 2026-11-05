@@ -1,12 +1,14 @@
 {
   "ai": {
     "provider": "gemini",
-    "model": "gemini-2.5-flash",
+    "model": "gemini-3.5-flash-lite",
     "api_key_env": "GOOGLE_API_KEY",
-    "languages": ["pt"],
+    "languages": [
+      "pt"
+    ],
     "temperature": 0.3,
     "max_tokens": 4096,
-    "throttle_sec": 4.5,
+    "throttle_sec": 7,
     "analysis_concurrency": 1,
     "enrichment_concurrency": 1
   },
@@ -29,7 +31,10 @@
   },
   "digest": {
     "max_items": 15,
-    "profile_order": ["tdah-familia", "tdah-ciencia"]
+    "profile_order": [
+      "tdah-familia",
+      "tdah-ciencia"
+    ]
   },
   "display": {
     "icon_style": "emoji"
@@ -46,7 +51,10 @@
       "ceid": "BR:pt-419",
       "max_results": 60,
       "category": "noticias-brasil",
-      "profile": ["tdah-familia", "tdah-ciencia"]
+      "profile": [
+        "tdah-familia",
+        "tdah-ciencia"
+      ]
     },
     "rss": [
       {
@@ -64,18 +72,14 @@
         "profile": "tdah-ciencia"
       },
       {
-        "name": "Medical News Today: TDAH",
-        "url": "https://rss.medicalnewstoday.com/adhd.xml",
-        "enabled": true,
-        "category": "pesquisa",
-        "profile": ["tdah-ciencia", "tdah-familia"]
-      },
-      {
         "name": "ADDitude Magazine",
         "url": "https://www.additudemag.com/category/blog/feed/",
         "enabled": true,
         "category": "familia",
-        "profile": ["tdah-familia", "tdah-ciencia"]
+        "profile": [
+          "tdah-familia",
+          "tdah-ciencia"
+        ]
       }
     ],
     "reddit": {
