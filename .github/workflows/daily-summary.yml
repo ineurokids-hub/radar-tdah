@@ -1,0 +1,65 @@
+name: Radar TDAH diário
+
+on:
+  schedule:
+    # Horário em UTC. 08:41 UTC = 05:41 em Brasília, para o radar estar no ar antes das 7h.
+    - cron: '41 8 * * *'
+  workflow_dispatch:      # permite rodar na hora pelo botão "Run workflow"
+
+jobs:
+  daily-summary:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v6
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.11.26"
+
+      - name: Instalar dependências
+        run: uv sync
+
+      - name: Usar a configuração do Radar TDAH
+        run: cp data/config.github.json data/config.json
+
+      - name: Recuperar radares anteriores (para dar contexto às notícias)
+        run: |
+          git fetch origin gh-pages --depth=1 || true
+          mkdir -p data/summaries
+          git show origin/gh-pages:_posts >/dev/null 2>&1 && \
+            git archive origin/gh-pages _posts | tar -x -C /tmp && \
+            for f in /tmp/_posts/*-summary-pt.md; do \
+              [ -e "$f" ] || continue; \
+              d=$(basename "$f" | cut -c1-10); \
+              cp "$f" "data/summaries/horizon-$d-pt.md"; \
+            done || true
+
+      - name: Rodar o radar
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: uv run horizon --hours 24
+
+      - name: Guardar a data de hoje
+        run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: Publicar no GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          keep_files: true
+          commit_message: "Radar TDAH: ${{ env.DATE }}"
+          publish_branch: gh-pages
+          enable_jekyll: true
