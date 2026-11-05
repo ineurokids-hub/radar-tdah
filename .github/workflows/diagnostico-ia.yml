@@ -1,0 +1,25 @@
+name: Diagnóstico da IA
+
+on:
+  workflow_dispatch:
+
+jobs:
+  testar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Testar a chave do Gemini
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: |
+          echo "Tamanho da chave: ${#GOOGLE_API_KEY} caracteres"
+          echo "--- Modelos que esta chave enxerga ---"
+          curl -s -H "x-goog-api-key: $GOOGLE_API_KEY" \
+            "https://generativelanguage.googleapis.com/v1beta/models?pageSize=200" \
+            | jq -r '.error // (.models[] | select(.name|test("flash")) | .name)'
+          for m in gemini-3.5-flash-lite gemini-3.1-flash-lite gemini-3.8-flash; do
+            echo "--- Teste com $m ---"
+            curl -s -H "x-goog-api-key: $GOOGLE_API_KEY" -H "Content-Type: application/json" \
+              "https://generativelanguage.googleapis.com/v1beta/models/$m:generateContent" \
+              -d '{"contents":[{"parts":[{"text":"Responda apenas: ok"}]}]}' \
+              | jq -c '.error // .candidates[0].content.parts[0].text'
+          done
