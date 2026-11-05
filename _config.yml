@@ -1,0 +1,35 @@
+theme: jekyll-theme-cayman
+title: Radar TDAH na Prática
+description: As notícias e pesquisas sobre TDAH que importam para a sua família, escolhidas todo dia
+lang: pt-BR
+# Se o seu repositório tiver outro nome, troque "/radar-tdah" pelo nome dele
+baseurl: "/radar-tdah"
+url: ""
+
+markdown: kramdown
+future: true
+plugins:
+  - jekyll-feed
+feed:
+  path: feed.xml
+exclude:
+  - ".github"
+  - "node_modules"
+  - "configuration.md"
+  - "profiles.md"
+  - "scoring.md"
+  - "scrapers.md"
+  - "extractors.md"
+  - "agent-skill.md"
+  - "chatgpt.md"
+  - "horizon-hub-design.md"
+  - "twitter-cookies.md"
+  - "feed-en.xml"
+  - "feed-zh.xml"
+
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "default"
