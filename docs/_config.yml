@@ -1,12 +1,13 @@
 theme: jekyll-theme-cayman
-title: Horizon Daily
-description: AI-curated daily digest of tech and research news
-baseurl: "/Horizon" # the subpath of your site, e.g. /blog
-url: "https://thysrael.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+title: Radar TDAH na Prática
+description: As notícias e pesquisas sobre TDAH que importam para a sua família, escolhidas todo dia
+lang: pt-BR
+# Se o seu repositório tiver outro nome, troque "/radar-tdah" pelo nome dele
+baseurl: "/radar-tdah"
+url: ""
 
-# Build settings
 markdown: kramdown
-future: true # Allow future posts to be published
+future: true
 plugins:
   - jekyll-feed
 feed:
@@ -14,6 +15,17 @@ feed:
 exclude:
   - ".github"
   - "node_modules"
+  - "configuration.md"
+  - "profiles.md"
+  - "scoring.md"
+  - "scrapers.md"
+  - "extractors.md"
+  - "agent-skill.md"
+  - "chatgpt.md"
+  - "horizon-hub-design.md"
+  - "twitter-cookies.md"
+  - "feed-en.xml"
+  - "feed-zh.xml"
 
 defaults:
   - scope:
